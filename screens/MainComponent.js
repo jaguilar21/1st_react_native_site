@@ -1,24 +1,30 @@
-import { Image, Platform, StyleSheet, Text, View } from "react-native";
-import Constants from "expo-constants";
-import CampsiteInfoScreen from "./CampsiteInfoScreen";
-import DirectoryScreen from "./DirectoryScreen";
-import { createStackNavigator } from "@react-navigation/stack";
+import { Image, Platform, StyleSheet, Text, View } from 'react-native';
+import Constants from 'expo-constants';
+import CampsiteInfoScreen from './CampsiteInfoScreen';
+import DirectoryScreen from './DirectoryScreen';
+import { createStackNavigator } from '@react-navigation/stack';
 import {
     createDrawerNavigator,
     DrawerContentScrollView,
     DrawerItemList
-} from "@react-navigation/drawer";
-import HomeScreen from "./HomeScreen";
-import AboutScreen from "./AboutScreen";
-import ContactScreen from "./ContactScreen";
-import { Icon } from "react-native-elements";
+} from '@react-navigation/drawer';
+import HomeScreen from './HomeScreen';
+import AboutScreen from './AboutScreen';
+import ContactScreen from './ContactScreen';
+import { Icon } from 'react-native-elements';
 import logo from '../assets/images/logo.png';
+import { useDispatch } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchPartners } from '../features/partners/partnersSlice';
+import { fetchCampsites } from '../features/campsites/campsitesSlice';
+import { fetchPromotions } from '../features/promotions/promotionsSlice';
+import { fetchComments } from '../features/comments/commentsSlice';
 
 const Drawer = createDrawerNavigator();
 
 const screenOptions = {
-    headerTintColor: "#fff",
-    headerStyle: { backgroundColor: "#5637DD" },
+    headerTintColor: '#fff',
+    headerStyle: { backgroundColor: '#5637DD' }
 };
 
 const HomeNavigator = () => {
@@ -26,10 +32,10 @@ const HomeNavigator = () => {
     return (
         <Stack.Navigator screenOptions={screenOptions}>
             <Stack.Screen
-                name="Home"
+                name='Home'
                 component={HomeScreen}
                 options={({ navigation }) => ({
-                    title: "Home",
+                    title: 'Home',
                     headerLeft: () => (
                         <Icon
                             name='home'
@@ -49,7 +55,7 @@ const AboutNavigator = () => {
     return (
         <Stack.Navigator screenOptions={screenOptions}>
             <Stack.Screen
-                name="About"
+                name='About'
                 component={AboutScreen}
                 options={({ navigation }) => ({
                     headerLeft: () => (
@@ -71,10 +77,10 @@ const ContactNavigator = () => {
     return (
         <Stack.Navigator screenOptions={screenOptions}>
             <Stack.Screen
-                name="Contact"
+                name='Contact'
                 component={ContactScreen}
                 options={({ navigation }) => ({
-                    title: "Contact Us",
+                    title: 'Contact Us',
                     headerLeft: () => (
                         <Icon
                             name='address-card'
@@ -93,19 +99,14 @@ const DirectoryNavigator = () => {
     const Stack = createStackNavigator();
     return (
         <Stack.Navigator
-            initialRouteName="Directory"
-            screenOptions={{
-                headerStyle: {
-                    backgroundColor: "#5637DD",
-                },
-                headerTintColor: "#fff",
-            }}
+            initialRouteName='Directory'
+            screenOptions={screenOptions}
         >
             <Stack.Screen
-                name="Directory"
+                name='Directory'
                 component={DirectoryScreen}
                 options={({ navigation }) => ({
-                    title: "Campsite Directory",
+                    title: 'Campsite Directory',
                     headerLeft: () => (
                         <Icon
                             name='list'
@@ -117,10 +118,10 @@ const DirectoryNavigator = () => {
                 })}
             />
             <Stack.Screen
-                name="CampsiteInfo"
+                name='CampsiteInfo'
                 component={CampsiteInfoScreen}
                 options={({ route }) => ({
-                    title: route.params.campsite.name,
+                    title: route.params.campsite.name
                 })}
             />
         </Stack.Navigator>
@@ -139,27 +140,36 @@ const CustomDrawerContent = (props) => (
         </View>
         <DrawerItemList {...props} labelStyle={{ fontWeight: 'bold' }} />
     </DrawerContentScrollView>
-)
+);
 
 const Main = () => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(fetchCampsites());
+        dispatch(fetchPromotions());
+        dispatch(fetchPartners());
+        dispatch(fetchComments());
+    }, [dispatch]);
+
     return (
         <View
             style={{
                 flex: 1,
                 paddingTop:
-                    Platform.OS === "ios" ? 0 : Constants.statusBarHeight,
+                    Platform.OS === 'ios' ? 0 : Constants.statusBarHeight
             }}
         >
             <Drawer.Navigator
-                initialRouteName="Home"
+                initialRouteName='Home'
                 drawerContent={CustomDrawerContent}
-                drawerStyle={{ backgroundColor: "#CEC8FF" }}
+                drawerStyle={{ backgroundColor: '#CEC8FF' }}
             >
                 <Drawer.Screen
-                    name="Home"
+                    name='Home'
                     component={HomeNavigator}
                     options={{
-                        title: "Home",
+                        title: 'Home',
                         drawerIcon: ({ color }) => (
                             <Icon
                                 name='home'
@@ -172,10 +182,10 @@ const Main = () => {
                     }}
                 />
                 <Drawer.Screen
-                    name="Directory"
+                    name='Directory'
                     component={DirectoryNavigator}
                     options={{
-                        title: "Campsite Directory",
+                        title: 'Campsite Directory',
                         drawerIcon: ({ color }) => (
                             <Icon
                                 name='list'
@@ -188,7 +198,7 @@ const Main = () => {
                     }}
                 />
                 <Drawer.Screen
-                    name="About"
+                    name='About'
                     component={AboutNavigator}
                     options={{
                         title: 'About',
@@ -204,10 +214,10 @@ const Main = () => {
                     }}
                 />
                 <Drawer.Screen
-                    name="Contact"
+                    name='Contact'
                     component={ContactNavigator}
                     options={{
-                        title: "Contact Us",
+                        title: 'Contact Us',
                         drawerIcon: ({ color }) => (
                             <Icon
                                 name='address-card'
@@ -248,6 +258,6 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 24
     }
-})
+});
 
 export default Main;
