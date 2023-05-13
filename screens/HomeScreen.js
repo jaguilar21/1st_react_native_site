@@ -1,16 +1,15 @@
 import { useEffect, useRef } from 'react';
-import { ScrollView, Text, View, Animated } from 'react-native';
+import { Text, View, Animated } from 'react-native';
 import { Card } from 'react-native-elements';
 import { useSelector } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
 import Loading from '../components/LoadingComponent';
 
-
 const FeaturedItem = (props) => {
     const { item } = props;
 
     if (props.isLoading) {
-        return <Loading />
+        return <Loading />;
     }
     if (props.errMess) {
         return (
